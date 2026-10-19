@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- 카톡 공유 미리보기 -->
+<meta property="og:title" content="매듭 먹는 새 — 오지은">
+<meta property="og:description" content="디지털 그림책으로 보기">
+<meta property="og:image" content="https://jieunoh-book.github.io/the-knot-eater/pages/04.jpg">
+<title>매듭 먹는 새</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* 레이아웃: 화면 가운데 책 한 권, 위에 제목, 아래에 넘김 버튼 */
+  :root {
+    --bg: #e9ebe8;        /* 배경 (책 속 회청색 종이 톤) */
+    --ink: #262a29;       /* 글자 */
+    --sub: #6c7471;       /* 보조 글자 */
+    --btn: #ffffff;       /* 버튼 */
+    --shadow: rgba(30, 40, 38, .18);
+    --cover: #9fe0d6;     /* 임시 표지 바탕 (뒷면지 민트) */
+    --cover-ink: #1f3a36;
+    --serif: "Noto Serif KR", "Nanum Myeongjo", "AppleMyungjo", serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1c201f; --ink: #e8ece9; --sub: #9aa39f; --btn: #2c3230;
+      --shadow: rgba(0, 0, 0, .5); color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1c201f; --ink: #e8ece9; --sub: #9aa39f; --btn: #2c3230;
+    --shadow: rgba(0, 0, 0, .5); color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { min-height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding-block: 28px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  header { text-align: center; }
+  h1 { font-size: 1.45rem; font-weight: 600; margin: 0 0 4px; letter-spacing: .12em; text-wrap: balance; }
+  .author { font-size: .85rem; color: var(--sub); margin: 0; letter-spacing: .08em; }
+
+  .stage { width: 100%; max-width: 1180px; }
+  #book { margin: 0 auto; filter: drop-shadow(0 10px 24px var(--shadow)); }
+
+  .page { background: #fff; overflow: hidden; }
+  .page img { width: 100%; height: 100%; object-fit: cover; display: block; user-select: none; -webkit-user-drag: none; }
+
+  /* 임시 표지 (진짜 표지가 생기면 pages/cover-front.jpg 로 바뀌어요) */
+  .tmp-cover {
+    width: 100%; height: 100%;
+    background: var(--cover) center / cover no-repeat;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6%; color: var(--cover-ink); text-align: center;
+  }
+  .tmp-cover .label {
+    background: rgba(255, 255, 255, .88);
+    padding: 7% 9%;
+    display: flex; flex-direction: column; align-items: center; gap: .5em;
+  }
+  .tmp-cover .t { font-size: clamp(.9rem, 2.6vw, 1.9rem); font-weight: 600; letter-spacing: .25em; }
+  .tmp-cover .a { font-size: clamp(.55rem, 1.2vw, .9rem); letter-spacing: .1em; }
+
+  nav { display: flex; align-items: center; gap: 16px; }
+  nav button {
+    border: none; background: var(--btn); color: var(--ink);
+    width: 44px; height: 44px; border-radius: 50%;
+    font-size: 1.3rem; line-height: 1; cursor: pointer;
+    box-shadow: 0 1px 4px var(--shadow);
+  }
+  nav button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  nav button:disabled { opacity: .35; cursor: default; }
+  #counter { font-size: .85rem; color: var(--sub); min-width: 80px; text-align: center; font-variant-numeric: tabular-nums; }
+  .hint { font-size: .8rem; color: var(--sub); margin: 0; text-align: center; }
+  .rotate { display: none; }
+  @media (orientation: portrait) and (max-width: 700px) { .rotate { display: block; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>매듭 먹는 새</h1>
+  <p class="author">글·그림 오지은</p>
+</header>
+
+<div class="stage"><div id="book"></div></div>
+
+<nav>
+  <button id="prev" aria-label="이전 장">‹</button>
+  <span id="counter"></span>
+  <button id="next" aria-label="다음 장">›</button>
+</nav>
+<p class="hint">페이지 모서리를 끌거나 화살표를 눌러 넘겨 보세요</p>
+<p class="hint rotate">휴대폰을 가로로 돌리면 더 크게 볼 수 있어요</p>
+
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+<script>
+  /* ── 설정: 내지 장수 (pages/01.jpg ~ 38.jpg) ── */
+  const TOTAL_PAGES = 38;
+
+  const book = document.getElementById("book");
+
+  function coverPage(front) {
+    const page = document.createElement("div");
+    page.className = "page";
+    page.dataset.density = "hard";            // 표지는 하드커버처럼 딱딱하게
+    const img = new Image();
+    img.src = "pages/" + (front ? "cover-front.jpg" : "cover-back.jpg");
+    img.alt = front ? "앞표지" : "뒤표지";
+    img.onerror = () => {                     // 표지 파일이 없으면 임시 표지
+      const c = document.createElement("div");
+      c.className = "tmp-cover";
+      c.style.backgroundImage = "url(pages/" + (front ? "37" : "38") + ".jpg)";
+      if (front) c.innerHTML = '<div class="label"><span class="t">매듭 먹는 새</span><span class="a">글·그림 오지은</span></div>';
+      img.replaceWith(c);
+    };
+    page.appendChild(img);
+    return page;
+  }
+
+  book.appendChild(coverPage(true));
+  for (let i = 1; i <= TOTAL_PAGES; i++) {
+    const page = document.createElement("div");
+    page.className = "page";
+    const img = new Image();
+    img.src = "pages/" + String(i).padStart(2, "0") + ".jpg";
+    img.alt = i + "쪽";
+    page.appendChild(img);
+    book.appendChild(page);
+  }
+  book.appendChild(coverPage(false));
+
+  // 판형 260×236mm 비율 (한 쪽 기준)
+  const pageFlip = new St.PageFlip(book, {
+    width: 520, height: 472,
+    size: "stretch",
+    minWidth: 130, maxWidth: 1040,
+    minHeight: 118, maxHeight: 944,
+    showCover: true,
+    maxShadowOpacity: 0.45,
+    mobileScrollSupport: false,
+    usePortrait: false                        // 항상 펼침면(두 쪽)으로
+  });
+  pageFlip.loadFromHTML(document.querySelectorAll(".page"));
+
+  const prev = document.getElementById("prev");
+  const next = document.getElementById("next");
+  const counter = document.getElementById("counter");
+  function update() {
+    const i = pageFlip.getCurrentPageIndex();
+    const last = pageFlip.getPageCount() - 1;
+    prev.disabled = i === 0;
+    next.disabled = i >= last;
+    counter.textContent = i === 0 ? "표지" : i >= last ? "끝" : i + "–" + Math.min(i + 1, TOTAL_PAGES) + " / " + TOTAL_PAGES;
+  }
+  prev.onclick = () => pageFlip.flipPrev();
+  next.onclick = () => pageFlip.flipNext();
+  document.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft") pageFlip.flipPrev();
+    if (e.key === "ArrowRight") pageFlip.flipNext();
+  });
+  pageFlip.on("flip", update);
+  update();
+</script>
+</body>
+</html>
