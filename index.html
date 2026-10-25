@@ -109,6 +109,17 @@
   .hint { font-size: .8rem; color: var(--sub); margin: 0; text-align: center; }
   .rotate { display: none; }
   @media (orientation: portrait) and (max-width: 700px) { .rotate { display: block; } }
+
+  /* 휴대폰 가로: 제목·안내를 숨기고 책을 화면 높이에 꽉 차게, 넘김 버튼은 양옆에 */
+  @media (orientation: landscape) and (max-height: 500px) {
+    body { padding-block: 6px; gap: 0; justify-content: center; min-height: 100dvh; }
+    header, .hint { display: none; }
+    .stage { max-width: calc((100dvh - 12px) * 2.2); overflow-clip-margin: 8px; }
+    nav { position: fixed; inset: 0 auto 0 0; width: 100%; pointer-events: none; justify-content: space-between;
+          padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
+    nav button { pointer-events: auto; width: 40px; height: 40px; opacity: .85; }
+    #counter { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -171,8 +182,8 @@
   const pageFlip = new St.PageFlip(book, {
     width: 520, height: 472,
     size: "stretch",
-    minWidth: 130, maxWidth: 1040,
-    minHeight: 118, maxHeight: 944,
+    minWidth: 20, maxWidth: 1040,
+    minHeight: 18, maxHeight: 944,
     showCover: true,
     maxShadowOpacity: 0.3,
     mobileScrollSupport: false,
