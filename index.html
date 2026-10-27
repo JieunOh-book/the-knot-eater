@@ -9,9 +9,10 @@
 <meta property="og:image" content="https://jieunoh-book.github.io/the-knot-eater/pages/cover-front.jpg">
 <title>매듭 먹는 새</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
 <style>
+  /* 글꼴: 제목은 페어 큰부리새, 나머지는 을유1945 (책에 쓰인 글자만 담아 가볍게) */
+  @font-face { font-family: "PearToucan"; src: url("fonts/PearToucan-Bold-title.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+  @font-face { font-family: "Eulyoo1945"; src: url("fonts/Eulyoo1945-Regular-sub.woff2") format("woff2"); font-weight: 400; font-display: swap; }
   /* 레이아웃: 화면 가운데 책 한 권, 위에 제목, 아래에 넘김 버튼 */
   :root {
     --bg: #e9ebe8;        /* 배경 (책 속 회청색 종이 톤) */
@@ -21,7 +22,8 @@
     --shadow: rgba(30, 40, 38, .18);
     --cover: #9fe0d6;     /* 임시 표지 바탕 (뒷면지 민트) */
     --cover-ink: #1f3a36;
-    --serif: "Noto Serif KR", "Nanum Myeongjo", "AppleMyungjo", serif;
+    --serif: "Eulyoo1945", "Nanum Myeongjo", "AppleMyungjo", serif;
+    --title: "PearToucan", "Eulyoo1945", serif;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -50,7 +52,7 @@
     padding-right: max(16px, env(safe-area-inset-right, 0px));
   }
   header { text-align: center; }
-  h1 { font-size: 1.45rem; font-weight: 600; margin: 0 0 4px; letter-spacing: .12em; text-wrap: balance; }
+  h1 { font-family: var(--title); font-size: 1.9rem; font-weight: 700; margin: 0 0 6px; letter-spacing: .04em; text-wrap: balance; }
   .author { font-size: .85rem; color: var(--sub); margin: 0; letter-spacing: .08em; }
 
   /* 책이 화면 높이 안에 들어오도록 폭을 제한하고, 넘기는 동안 튀어나오는 부분은 잘라서 화면이 흔들리지 않게 */
@@ -93,7 +95,7 @@
     padding: 7% 9%;
     display: flex; flex-direction: column; align-items: center; gap: .5em;
   }
-  .tmp-cover .t { font-size: clamp(.9rem, 2.6vw, 1.9rem); font-weight: 600; letter-spacing: .25em; }
+  .tmp-cover .t { font-family: var(--title); font-size: clamp(.9rem, 2.6vw, 1.9rem); font-weight: 600; letter-spacing: .25em; }
   .tmp-cover .a { font-size: clamp(.55rem, 1.2vw, .9rem); letter-spacing: .1em; }
 
   nav { display: flex; align-items: center; gap: 16px; }
