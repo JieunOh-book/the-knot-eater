@@ -46,6 +46,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;   /* 화면 세로 가운데 */
+    min-height: 100vh; min-height: 100dvh;
     gap: 18px;
     padding-block: 28px;
     padding-left: max(16px, env(safe-area-inset-left, 0px));
@@ -64,6 +66,7 @@
   /* 펼침면 가운데 1px 틈 메우기: 왼쪽 쪽 그림을 오른쪽으로 살짝 겹치게 */
   .page.--left:not(.cover) { overflow: visible; }
   .page.--left:not(.cover) img { width: calc(100% + 2px); max-width: none; }
+  .page.--left:not(.cover) .fx { right: -2px; }       /* 겹친 2px에도 접힘 그늘을 같이 입혀서 밝은 줄이 안 생기게 */
   .page .fx { position: absolute; inset: 0; pointer-events: none; }
 
   /* 내지 (아르떼 울트라화이트 160g): 무광 + 잔잔한 종이 결, 가운데 접힘 그늘 */
